@@ -106,3 +106,4 @@ venv.bak/
 # hackathon
 output/
 .vscode
+.DS_Store

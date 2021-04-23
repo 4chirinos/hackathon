@@ -88,3 +88,5 @@ it is just retrieving the results from the first page
 For example: "python3 script.py k1 k2 k3" is interpreted as three keywords. Maybe we would like to
 specify a keyword composed by two or more words, like "python3 script.py 'k1 k2' 'k3'"., where 'k1 k1'
 is the first keyword and 'k3' the second one.
+Besides, **don't forget it is using google search to find results**, so you can apply different filters
+to narrow the scope. **Check**: https://support.google.com/websearch/answer/2466433?hl=en

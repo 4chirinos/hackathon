@@ -7,7 +7,7 @@ Python project to retrieve basic details from linkedin profiles. It takes [this 
 The flow is as follow:
 
 1. It searches, in google, for linkedin profiles using the keywords it receives as arguments
-2. It takes the results from google and proceeds to visit the linkedin profiles to pull the details
+2. It takes the results *ONLY* from the first page and proceeds to visit the linkedin profiles to pull the details
 3. It saves the details in a csv file located in the "output" folder
 
 ## Requirements
@@ -56,3 +56,13 @@ python3 script.py Nisum Chile
 ```sh
 python3 script.py Nisum India Chief
 ```
+
+## To be done
+
+- Set up docker image, so we don't have to touch or install anything in our local environment
+- Set up configuration to retrieve google results from the first N pages. Remember that right now
+it is just retrieving the results from the first page
+- Tune the filters and keyword definitions. At the moment it interprets each word as a seperated keyword.
+For example: "python3 script.py k1 k2 k3" is interpreted as three keywords. Maybe we would like to
+specify a keyword composed by two or more words, like "python3 script.py 'k1 k2' 'k3'"., where 'k1 k1'
+is the first keyword and 'k3' the second one.

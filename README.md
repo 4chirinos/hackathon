@@ -90,4 +90,5 @@ specify a keyword composed by two or more words, like "python3 script.py 'k1 k2'
 is the first keyword and 'k3' the second one.
 
 **Note**: Don't forget it is using google search to find results, so **you can apply different filters to narrow the scope**.
+
 **Check**: https://support.google.com/websearch/answer/2466433?hl=en

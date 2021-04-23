@@ -9,7 +9,7 @@ Python project to retrieve basic details from linkedin profiles. It takes [this 
 The flow is as follow:
 
 1. It searches, in google, for linkedin profiles using the keywords it receives as arguments
-2. It takes the results *ONLY* from the first page and proceeds to visit the linkedin profiles to pull the details
+2. It takes the results **ONLY** from the first page and proceeds to visit the linkedin profiles to pull the details
 3. It saves the details in a csv file located in the "output" folder
 
 ## Requirements

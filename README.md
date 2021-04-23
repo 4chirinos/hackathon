@@ -67,12 +67,13 @@ python3 script.py Nisum India Chief
 
 ## Issues
 
-- It requires a linkedin accout, so it requires also a email account too. Preferably a **GMAIL** account,
-because it seems that the CCS style from linkedin page varies a little bit based on the email account type (not confirmed)
+- It requires a linkedin accout, so it requires an email account too. Preferably a **GMAIL** account,
+because it seems that the CCS style from linkedin page varies a little bit based on the type of the email account (not confirmed)
 
 - From time to time, linkedin page show up modals or security checks because of the bot behavior
 that the script has. In that case the script will fail. Try running again the script and hopefully
-it will work.
+it will work. Otherwise, try setting a breakpoint in the section of code where the message appears
+and solve it manually (human interaction). If it doesn't help, maybe the account is already banned (not confirmed)
 
 - Eventually, in a matter of one day, linkedin blocks the account because it is detected as a bot.
 Try not running too much tests, maybe it will help the account last longer (not confirmed)

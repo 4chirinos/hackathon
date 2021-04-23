@@ -1,19 +1,14 @@
-import os, re, sys, csv, time, json, datetime, logging
+import os, re, sys, time, json, datetime, logging, configparser
 from models import Profile
 from pathlib import Path
-from parsel import Selector
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from extractors import extract_name, extract_job_title, extract_location, extract_company, extract_contacts
 
-email = 'hackathon63@gmail.com'
-password = 'hackathon63'
-loading_time = 4
-NA = 'N/A'
-
-options = Options()
-options.headless = True
-driver = webdriver.Chrome('./chromedriver', options=options)
+loading_time = 3
+driver = None
 
 def skip_remember_me():
     try:
@@ -31,10 +26,10 @@ def skip_add_phone_number():
     except:
         logging.info('No add phone number page')
 
-def login():
+def login(username, password):
     driver.get('https://www.linkedin.com')
     input_username = driver.find_element_by_id('session_key')
-    input_username.send_keys(email)
+    input_username.send_keys(username)
     input_password = driver.find_element_by_id('session_password')
     input_password.send_keys(password)
     button_log_in = driver.find_element_by_class_name('sign-in-form__submit-button')
@@ -51,70 +46,65 @@ def get_urls(keywords):
     search_query.send_keys(Keys.ENTER)
     linkedin_results = driver.find_elements_by_class_name('yuRUbf')
     linkedin_urls = [anchor.get_attribute('href') for anchor in (linkedin_result.find_element_by_tag_name('a') for linkedin_result in linkedin_results)]
+    linkedin_urls = list(map(lambda url: re.sub('^https://.+\.linkedin.com', 'https://www.linkedin.com', url), linkedin_urls))
+    linkedin_urls = list(map(lambda url: re.sub('/..$|/..-..$', '', url), linkedin_urls))
+    linkedin_urls = list(map(lambda url: url if url[len(url) - 1] != '/' else url[:len(url) - 1], linkedin_urls))
     return linkedin_urls
 
-def get_contacts():
-    try:
-        button_contacts = driver.find_element_by_xpath('/html/body/div[7]/div[3]/div/div/div/div/div[2]/div/div/main/div/div[1]/section/div[2]/div[2]/div[1]/ul[2]/li[3]/a')
-        logging.info('Calling: ' + button_contacts.get_attribute('href'))
-        button_contacts.click()
-        time.sleep(loading_time)
-        contact_details = driver.find_element_by_class_name('pv-profile-section').find_elements_by_tag_name('a')
-        contacts = list(map(lambda detail: detail.get_attribute('href'), contact_details))
-        return contacts
-    except Exception as e:
-        logging.error(e)
-        return list()
-
-def get_profile(url):
-    url = re.sub('^https://.+\.linkedin.com', 'https://www.linkedin.com', url)
+def get_contacts(url):
+    url = url + '/detail/contact-info'
     logging.info('Calling: ' + url)
     driver.get(url)
     time.sleep(loading_time)
-    selector = Selector(text=driver.page_source) 
-    name = selector.xpath('/html/body/div[7]/div[3]/div/div/div/div/div[2]/div/div/main/div/div[1]/section/div[2]/div[2]/div[1]/ul[1]/li/text()').extract_first()
-    job_title = selector.xpath('/html/body/div[7]/div[3]/div/div/div/div/div[2]/div/div/main/div/div[1]/section/div[2]/div[2]/div[1]/h2/text()').extract_first()
-    location = selector.xpath('/html/body/div[7]/div[3]/div/div/div/div/div[2]/div/div/main/div/div[1]/section/div[2]/div[2]/div[1]/ul[2]/li[1]/text()').extract_first()
-    company = selector.xpath('/html/body/div[7]/div[3]/div/div/div/div/div[2]/div/div/main/div/div[1]/section/div[2]/div[2]/div[2]/ul/li/a/span/text()').extract_first()
-    name = name.strip() if name else NA
-    job_title = job_title.strip() if job_title else NA
-    location = location.strip() if location else NA
-    company = company.strip() if company else NA
-    contacts = get_contacts()
-    profile = Profile(name, job_title, location, company, contacts)
-    return profile
+    html = BeautifulSoup(driver.page_source, 'html.parser')
+    return extract_contacts(html)
 
-def to_csv(profiles):
+def get_profile(url):
+    logging.info('Calling: ' + url)
+    driver.get(url)
+    time.sleep(loading_time)
+    html = BeautifulSoup(driver.page_source, 'html.parser')
+    name = extract_name(html)
+    job_title = extract_job_title(html)
+    location = extract_location(html)
+    company = extract_company(html)
+    contacts = get_contacts(url)
+    return Profile(name, job_title, location, company, contacts)
+
+def to_json_file(profiles):
     project_folder_path = Path().absolute()
     current_time = str(datetime.datetime.now())
-    file_location = f'{project_folder_path}/output/profiles_{current_time}.csv'
+    file_location = f'{project_folder_path}/output/profiles_{current_time}.json'
     os.makedirs(os.path.dirname(file_location), exist_ok = True)
-    csv_file = open(file_location, 'w')
-    with csv_file:
-        columns = ['Name', 'Job Title', 'Location', 'Company', 'Contacts']
-        writer = csv.DictWriter(csv_file, fieldnames = columns)    
-        writer.writeheader()
-        for profile in profiles:
-            writer.writerow({
-                'Name': profile.name,
-                'Job Title': profile.job_title,
-                'Location': profile.location,
-                'Company': profile.company,
-                'Contacts': ';'.join(profile.contacts)
-            })
+    with open(file_location, 'w', encoding = 'utf8') as f:
+        json.dump(profiles, f, indent = 2, sort_keys = True, ensure_ascii = False)
+
+def get_linkedin_config():
+    project_folder_path = Path().absolute()
+    config = configparser.RawConfigParser()
+    config.read(f'{project_folder_path}/config')
+    return dict(config.items('LINKEDIN'))
+
+def launch_browser(is_headless):
+    global driver
+    options = Options()
+    options.headless = is_headless
+    driver = webdriver.Chrome('./chromedriver', options = options)
 
 def main():
     handlers = [logging.FileHandler('hackathon.log'), logging.StreamHandler()]
-    logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(message)s', handlers=handlers, level = logging.INFO)
+    logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(message)s', handlers = handlers, level = logging.INFO)
     logging.info('Started')
-    login()
+    linkedin_config = get_linkedin_config()
+    launch_browser(True)
+    login(linkedin_config['username'], linkedin_config['password'])
     skip_remember_me()
     skip_add_phone_number()
     keywords = list(map(lambda arg: '"' + arg + '"', sys.argv[1:]))
     logging.info(f'Keywords: {keywords}')
     linkedin_urls = get_urls(keywords)
     profiles = list(map(lambda url: get_profile(url), linkedin_urls))
-    to_csv(profiles)
+    to_json_file(profiles)
     logging.info('Finished')
 
 if __name__ == '__main__':

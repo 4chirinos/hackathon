@@ -18,7 +18,10 @@ The flow is as follow:
 
 ## Install dependencies
 
-- Open terminal and run: pip3 install -r requirements
+- Open terminal and run:
+```sh
+pip3 install -r requirements
+```
 
 ## Virtual environment (optional)
 
@@ -34,6 +37,11 @@ It will create a folder in the current location. Then run the next command:
 source hackathon/bin/activate
 ```
 
+Now you can run installation on this environment:
+```sh
+pip3 install -r requirements
+```
+
 If you want to deactivate it, just run:
 ```sh
 deactivate
@@ -41,4 +49,10 @@ deactivate
 
 ## Execute scraper
 
-- It has to be run passing in the keywords as arguments: python3 main.py Nisum Chile
+- It has to be run passing in the keywords as arguments. Examples below:
+```sh
+python3 script.py Nisum Chile
+```
+```sh
+python3 script.py Nisum India Chief
+```

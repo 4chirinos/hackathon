@@ -1,3 +1,7 @@
 [LINKEDIN]
 username = hackathon2031@gmail.com
 password = linkedin2021
+
+[SELENIUM]
+loading_time = 3
+is_headless = True

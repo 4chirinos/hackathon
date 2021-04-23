@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from extractors import extract_name, extract_job_title, extract_location, extract_company, extract_contacts
 
-loading_time = 3
+loading_time = None
 driver = None
 
 def skip_remember_me():
@@ -26,12 +26,12 @@ def skip_add_phone_number():
     except:
         logging.info('No add phone number page')
 
-def login(username, password):
+def login(config):
     driver.get('https://www.linkedin.com')
     input_username = driver.find_element_by_id('session_key')
-    input_username.send_keys(username)
+    input_username.send_keys(config['username'])
     input_password = driver.find_element_by_id('session_password')
-    input_password.send_keys(password)
+    input_password.send_keys(config['password'])
     button_log_in = driver.find_element_by_class_name('sign-in-form__submit-button')
     button_log_in.click()
     time.sleep(loading_time)
@@ -79,25 +79,26 @@ def to_json_file(profiles):
     with open(file_location, 'w', encoding = 'utf8') as f:
         json.dump(profiles, f, indent = 2, sort_keys = True, ensure_ascii = False)
 
-def get_linkedin_config():
+def get_config(name):
     project_folder_path = Path().absolute()
     config = configparser.RawConfigParser()
     config.read(f'{project_folder_path}/config')
-    return dict(config.items('LINKEDIN'))
+    return dict(config.items(name))
 
-def launch_browser(is_headless):
+def launch_browser(config):
     global driver
+    global loading_time
+    loading_time = int(config['loading_time'])
     options = Options()
-    options.headless = is_headless
+    options.headless = config['is_headless'] == 'True'
     driver = webdriver.Chrome('./chromedriver', options = options)
 
 def main():
     handlers = [logging.FileHandler('hackathon.log'), logging.StreamHandler()]
     logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(message)s', handlers = handlers, level = logging.INFO)
     logging.info('Started')
-    linkedin_config = get_linkedin_config()
-    launch_browser(True)
-    login(linkedin_config['username'], linkedin_config['password'])
+    launch_browser(get_config('SELENIUM'))
+    login(get_config('LINKEDIN'))
     skip_remember_me()
     skip_add_phone_number()
     keywords = list(map(lambda arg: '"' + arg + '"', sys.argv[1:]))

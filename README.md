@@ -2,6 +2,8 @@
 
 ## Overview
 
+**Note**: Currently this only works with Chrome
+
 Python project to retrieve basic details from linkedin profiles. It takes [this article](https://www.linkedin.com/pulse/how-easy-scraping-data-from-linkedin-profiles-david-craven/) as reference
 
 The flow is as follow:
@@ -15,6 +17,10 @@ The flow is as follow:
 - Python 3
 - Pip 3
 - The project was run using Chrome (Version 90.0.4430.85 (Official Build) (x86_64))
+
+Probably you a different Chrome version. In that case, you will need to download the Selenium driver for that version.
+Once you download the driver, remove the file "chromedriver" already present in the project
+and paste the new one keeping the same name.
 
 ## Install dependencies
 
@@ -59,7 +65,8 @@ python3 script.py Nisum India Chief
 
 ## To be done
 
-- Set up docker image, so we don't have to touch or install anything in our local environment
+- Set up docker image, so we don't have to touch or install anything in our local environment. Currently, it requires
+to have Chrome Version 90.0.4430.85
 - Set up configuration to retrieve google results from the first N pages. Remember that right now
 it is just retrieving the results from the first page
 - Tune the filters and keyword definitions. At the moment it interprets each word as a seperated keyword.

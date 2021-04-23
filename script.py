@@ -91,7 +91,8 @@ def launch_browser(config):
     loading_time = int(config['loading_time'])
     options = Options()
     options.headless = config['is_headless'] == 'True'
-    driver = webdriver.Chrome('./chromedriver', options = options)
+    driver_name = config['driver']
+    driver = webdriver.Chrome(f'./{driver_name}', options = options)
 
 def main():
     handlers = [logging.FileHandler('hackathon.log'), logging.StreamHandler()]

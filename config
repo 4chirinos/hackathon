@@ -5,3 +5,4 @@ password = linkedin2021
 [SELENIUM]
 loading_time = 3
 is_headless = True
+driver = chromedriver

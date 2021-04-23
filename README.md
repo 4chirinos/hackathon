@@ -1,5 +1,7 @@
 # Hackathon
 
+[Challenge](https://docs.google.com/document/d/1lpG1TFfZ4GNZ7riYtH_NO5tODi-i3mv0otYXu-3LTYk/edit)
+
 ## Overview
 
 **Note**: Currently this only works with Chrome
@@ -18,7 +20,7 @@ The flow is as follow:
 - Pip 3
 - The project was run using Chrome (Version 90.0.4430.85 (Official Build) (x86_64))
 
-Probably you a different Chrome version. In that case, you will need to download the Selenium driver for that version.
+Probably you have a different Chrome version. In that case, you will need to download the Selenium driver for that version.
 Once you download the driver, remove the file "chromedriver" already present in the project
 and paste the new one keeping the same name.
 

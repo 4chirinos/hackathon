@@ -22,6 +22,8 @@ Probably you a different Chrome version. In that case, you will need to download
 Once you download the driver, remove the file "chromedriver" already present in the project
 and paste the new one keeping the same name.
 
+* **[You can download different versions from here](https://sites.google.com/a/chromium.org/chromedriver/downloads)**
+
 ## Install dependencies
 
 - Open terminal and run:

@@ -82,7 +82,7 @@ is the first keyword and 'k3' the second one.
 
 ## Issues
 
-- It requires a linkedin accout, so it requires an email account too. Preferably a **GMAIL** account,
+- It requires a linkedin account, so it requires an email account too. Preferably a **GMAIL** account,
 because it seems that the CCS style from linkedin page varies a little bit based on the type of the email account (not confirmed)
 
 - From time to time, linkedin page show up modals or security checks because of the bot behavior
